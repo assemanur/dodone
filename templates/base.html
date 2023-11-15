@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>
+          {% block title %}{% endblock %}
+        </title>
+        
+        {% block head %}{% endblock %}
+        <link rel="stylesheet" href="style.css"> <!-- Link to a CSS stylesheet-->
+
+    </head>
+
+    <body>
+        <header>
+            <!-- Common header content -->
+        </header>
+    
+        <nav>
+            <!-- Navigation bar, if you have one -->
+        </nav>
+    
+        <main>
+            {% block content %}
+            <!-- Default content (can be empty) -->
+            {% endblock %}
+        </main>
+    
+        <footer>
+            <!-- Common footer content -->
+        </footer>
+    </body>
+</html>

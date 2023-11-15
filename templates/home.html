@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to Our App{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>Welcome to Our Amazing App!</h1>
+        <p>Join our community to explore more features.</p>
+    </header>
+    
+    <section>
+        <div class="auth-actions">
+            <a href="/signin">Sign In</a> <!-- Link to a sign-in page -->
+            <span>or</span>
+            <a href="/signup">Sign Up</a> <!-- Link to a sign-up page -->
+        </div>
+    </section>
+{% endblock %}
