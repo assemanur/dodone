@@ -4,6 +4,7 @@ from server import app
 db = SQLAlchemy(app)
 
 class User(db.Model):
+    """A user model."""
 
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -15,6 +16,7 @@ class User(db.Model):
         return f'<User {self.username}>'
 
 class ToDoList(db.Model):
+    """To-Do list model."""
 
     __tablename__ = 'todo_lists'
     id = db.Column(db.Integer, primary_key=True)
@@ -27,6 +29,7 @@ class ToDoList(db.Model):
         return f'<ToDoList {self.title}>'
     
 class ToDoItem(db.Model):
+    """An item in To-Do list."""
 
     __tablename__ = 'todo_items'
     id = db.Column(db.Integer, primary_key=True)
@@ -39,6 +42,7 @@ class ToDoItem(db.Model):
         return f'<ToDoItem {self.description}>'
     
 class Category(db.Model):
+    """To-Do list category."""
 
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
@@ -50,6 +54,7 @@ class Category(db.Model):
         return f'<Category {self.name}>'
     
 class Comment(db.Model):
+    """A comment to the item in To-Do list."""
 
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
@@ -75,5 +80,4 @@ if __name__ == "__main__":
     # Call connect_to_db(app, echo=False) if your program output gets
     # too annoying; this will tell SQLAlchemy not to print out every
     # query it executes.
-
     connect_to_db(app)
