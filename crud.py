@@ -1,13 +1,13 @@
 """CRUD operations in database."""
 
 from flask import session
-from models import db, User, ToDoList, ToDoItem, Category, Comment, connect_to_db
+from models import db, User, ToDoList, ToDoItem, Category, connect_to_db
 #import requests
 
-def create_user(username, email, password):
+def create_user(email, password):
     """Creating a new user."""
 
-    new_user = User(username=username, email=email)
+    new_user = User(email=email)
     new_user.password = password  # This will hash the password
     db.session.add(new_user)
     try:
@@ -33,13 +33,11 @@ def authenticate_user(email, password):
     return None
 
 
-def update_user(user_id, username=None, email=None, password=None):
+def update_user(user_id, email=None, password=None):
     """Updating user information."""
-    
+
     user = User.query.get(user_id)
     if user:
-        if username:
-            user.username = username
         if email:
             user.email = email
         if password:

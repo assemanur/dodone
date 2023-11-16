@@ -11,7 +11,7 @@ class User(db.Model):
 
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
     _password_hash = db.Column(db.String(200), nullable=False)
     lists = db.relationship('ToDoList', backref='user', lazy=True)
 
@@ -28,7 +28,7 @@ class User(db.Model):
         return check_password_hash(self._password_hash, password)
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<User {self.email}>'
 
 
 class ToDoList(db.Model):
@@ -70,7 +70,7 @@ class Category(db.Model):
     def __repr__(self):
         return f'<Category {self.name}>'
     
-    
+
 def connect_to_db(flask_app, db_uri="postgresql:///todo_list", echo=True):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     flask_app.config["SQLALCHEMY_ECHO"] = echo

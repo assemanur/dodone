@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
 
 
 class CreateUserForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    #username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=35)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
@@ -20,7 +20,7 @@ class SignInForm(FlaskForm):
 
 
 class UpdateUserForm(FlaskForm):
-    username = StringField('Username', validators=[Optional(), Length(min=2, max=20)])
+    #username = StringField('Username', validators=[Optional(), Length(min=2, max=20)])
     email = StringField('Email', validators=[Optional(), Email()])
     password = PasswordField('Password', validators=[Optional(), Length(min=8, max=35)])
 
