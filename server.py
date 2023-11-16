@@ -1,4 +1,4 @@
-"""Server for a To-Do List App website."""
+"""Server for a DoDone App website."""
 
 from flask import (Flask, render_template, request, flash, session, redirect)
 from flask_sqlalchemy import SQLAlchemy
