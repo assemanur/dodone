@@ -2,9 +2,9 @@
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-from server import app
 
-db = SQLAlchemy(app)
+
+db = SQLAlchemy()
 
 class User(db.Model):
     """A user model."""
@@ -82,7 +82,7 @@ def connect_to_db(flask_app, db_uri="postgresql:///todo_list", echo=True):
     print("Connected to the db!")
     
 if __name__ == "__main__":
-
+    from server import app
     # Call connect_to_db(app, echo=False) if your program output gets
     # too annoying; this will tell SQLAlchemy not to print out every
     # query it executes.

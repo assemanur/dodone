@@ -8,27 +8,13 @@
         </title>
         
         {% block head %}{% endblock %}
-        <link rel="stylesheet" href="style.css"> <!-- Link to a CSS stylesheet-->
+        <link rel="stylesheet" href="/static/css/style.css"> <!-- Link to a CSS stylesheet-->
 
     </head>
 
     <body>
-        <header>
-            <!-- Common header content -->
-        </header>
+        {% block body %}{% endblock %}
+        {% block after_body %}{% endblock %}
     
-        <nav>
-            <!-- Navigation bar, if you have one -->
-        </nav>
-    
-        <main>
-            {% block content %}
-            <!-- Default content (can be empty) -->
-            {% endblock %}
-        </main>
-    
-        <footer>
-            <!-- Common footer content -->
-        </footer>
     </body>
 </html>
