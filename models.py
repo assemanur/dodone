@@ -2,6 +2,7 @@
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Enum
 
 
 db = SQLAlchemy()
@@ -52,7 +53,10 @@ class ToDoItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(200), nullable=False)
     comment = db.Column(db.Text, nullable=True)
-    is_completed = db.Column(db.Boolean, default=False)
+    due_date = db.Column(db.DateTime, nullable=True)  # For storing the due date
+    status = db.Column(Enum('active', 'completed', 'overdue', name='status_types'), default='active')  # Track the status of the task
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())  # Creation timestamp
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())  # Modification timestamp
     list_id = db.Column(db.Integer, db.ForeignKey('todo_lists.id'), nullable=False)
 
     def __repr__(self):
@@ -64,7 +68,6 @@ class Category(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     lists = db.relationship('ToDoList', backref='category', lazy=True)
 
     def __repr__(self):
