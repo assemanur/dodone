@@ -38,8 +38,8 @@ class ToDoList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(500), nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     items = db.relationship('ToDoItem', backref='todolist', lazy=True)
 
     def __repr__(self):
@@ -53,7 +53,7 @@ class ToDoItem(db.Model):
     description = db.Column(db.String(200), nullable=False)
     comment = db.Column(db.Text, nullable=True)
     is_completed = db.Column(db.Boolean, default=False)
-    list_id = db.Column(db.Integer, db.ForeignKey('to_do_list.id'), nullable=False)
+    list_id = db.Column(db.Integer, db.ForeignKey('todo_lists.id'), nullable=False)
 
     def __repr__(self):
         return f'<ToDoItem {self.description}>'
@@ -64,7 +64,7 @@ class Category(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     lists = db.relationship('ToDoList', backref='category', lazy=True)
 
     def __repr__(self):
