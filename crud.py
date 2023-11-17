@@ -41,12 +41,39 @@ def update_user(user_id, email=None, password=None):
         if email:
             user.email = email
         if password:
-            user.password = password  # Assuming you have a password setter that hashes the password
+            user.password = password
 
         db.session.commit()
         return user
     else:
         return None  # User not found
+    
+
+def get_todo_lists_by_user_id(user_id):
+    """Return to-do lists for a user with the given user_id."""
+
+    # First, get the user by email
+    user = User.query.filter_by(id=user_id).first()
+
+    # If the user exists, return their to-do lists
+    if user:
+        return user.lists
+    else:
+        return None
+    
+
+def create_todo_list(title, description, user_id, todo_item_description):
+    """Create and return a new to-do list."""
+    new_todo_list = ToDoList(title=title, description=description, user_id=user_id)
+    db.session.add(new_todo_list)
+    db.session.commit()
+
+    # Add an initial to-do item to the list
+    new_todo_item = ToDoItem(description=todo_item_description, list_id=new_todo_list.id)
+    db.session.add(new_todo_item)
+    db.session.commit()
+
+    return new_todo_list
 
 
 if __name__ == '__main__':

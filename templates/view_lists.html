@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+View Lists
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Your To-Do Lists</h1>
+
+    <!-- Display all to-do lists -->
+    <div class="todo-lists">
+        {% for todo_list in todo_lists %}
+            <div class="todo-list">
+                <h2>{{ todo_list.title }}</h2>
+                <p>{{ todo_list.description }}</p>
+                <!-- more details if needed -->
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Form to add a new list with to-do items -->
+    <div class="add-new-list">
+        <h2>Add New List</h2>
+        <form action="/add_new_list" method="post">
+            <label for="list_title">List Title:</label>
+            <input type="text" id="list_title" name="list_title" required>
+
+            <label for="list_description">List Description:</label>
+            <textarea id="list_description" name="list_description"></textarea>
+
+            <!-- to add a single to-do item to start with -->
+            <label for="todo_item">To-Do Item:</label>
+            <input type="text" id="todo_item" name="todo_item" required>
+
+            <input type="submit" value="Add List">
+        </form>
+    </div>
+</div>
+{% endblock %}

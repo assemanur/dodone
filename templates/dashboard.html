@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block head %}
+<!-- Any additional head content specific to the dashboard -->
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Welcome, {{ user.email }}!</h1>
+    <div class="profile-info">
+        <!-- Display user profile information -->
+        <p>Email: {{ user.email }}</p>
+        <!-- Add more profile info if needed -->
+    </div>
+
+    <div class="todo-summary">
+        <!-- Display to-do list summary as a link -->
+        <a href="{{ url_for('view_lists') }}">You have {{ todo_lists|length }} active to-do lists.</a>
+    </div>
+
+    <div class="quick-task-add">
+        <!-- Form for adding a quick task -->
+        <form action="/add_task" method="post">
+            <!-- Form field for list title -->
+            <label for="list_title">List Title:</label>
+            <input type="text" id="list_title" name="list_title">
+
+            <!-- Form field for task description -->
+            <label for="task_description">Task Description:</label>
+            <input type="text" id="task_description" name="task_description">
+
+            <input type="submit" value="Add Task">
+        </form>
+    </div>
+</div>
+{% endblock %}

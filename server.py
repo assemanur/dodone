@@ -69,6 +69,66 @@ def signup():
     return render_template('signup.html', form=form)
 
 
+@app.route('/dashboard')
+def dashboard():
+    #Fetch user
+    if 'user_id' not in session:
+        # Redirect to sign-in page if not logged in
+        return redirect(url_for('signin'))
+
+    user_id = session['user_id']
+    user = crud.get_user_by_id(user_id)  # Get the current user
+
+    if not user:
+        # Handle case where user is not found
+        return redirect(url_for('signin'))
+    
+    todo_lists = crud.get_todo_lists_by_user_id(user_id)
+
+
+    return render_template('dashboard.html', user=user, todo_lists=todo_lists)
+
+
+@app.route('/view_lists')
+def view_lists():
+    # Ensure the user is logged in
+    if 'user_id' not in session:
+        return redirect(url_for('signin'))
+
+    user_id = session['user_id']
+    user = crud.get_user_by_id(user_id)
+
+    if not user:
+        return redirect(url_for('signup'))
+
+    todo_lists = crud.get_todo_lists_by_user_id(user_id)
+
+    return render_template('view_lists.html', todo_lists=todo_lists)
+
+
+@app.route('/add_new_list', methods=['POST'])
+def add_new_list():
+    if 'user_id' not in session:
+        return redirect(url_for('signin'))
+
+    user_id = session['user_id']
+    title = request.form.get('list_title')
+    description = request.form.get('list_description')
+    todo_item_description = request.form.get('todo_item')  # Get the to-do item description from the form
+
+    # Create the new to-do list with the initial to-do item
+    new_list = crud.create_todo_list(title, description, user_id, todo_item_description)
+
+    if new_list:
+        flash('New to-do list with an initial item added successfully!', 'success')
+    else:
+        flash('An error occurred. Please try again.', 'error')
+
+    return redirect(url_for('view_lists'))
+
+
+
+
 if __name__ == "__main__":
     connect_to_db(app)
     app.run(host="0.0.0.0", debug=True)
