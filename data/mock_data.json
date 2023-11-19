@@ -153,7 +153,7 @@
             "description": "Jog for 30 minutes",
             "comment": "Comment for item 1",
             "due_date": "2023-11-15 14:58:42",
-            "status": "overdue",
+            "status": "active",
             "todolist_id": 2
         },
         {
@@ -209,7 +209,7 @@
             "description": "Four thousand weeks",
             "comment": "Time management for mortals",
             "due_date": "2023-11-14 06:20:41",
-            "status": "overdue",
+            "status": "completed",
             "todolist_id": 3
         },
         {
@@ -244,7 +244,7 @@
             "description": "Plan healthy meals for the week",
             "comment": "Comment for item 4",
             "due_date": "2023-11-10 22:43:03",
-            "status": "overdue",
+            "status": "completed",
             "todolist_id": 4
         },
         {
@@ -307,7 +307,7 @@
             "description": "Sort through wardrobe",
             "comment": "Comment for item 3",
             "due_date": "2023-11-13 04:23:16",
-            "status": "overdue",
+            "status": "active",
             "todolist_id": 6
         },
         {
@@ -335,14 +335,14 @@
             "description": "Schedule a weekend outing",
             "comment": "Comment for item 2",
             "due_date": "2023-11-16 18:47:23",
-            "status": "overdue",
+            "status": "completed",
             "todolist_id": 7
         },
         {
             "description": "Have a movie night",
             "comment": "Comment for item 3",
             "due_date": "2023-11-25 13:12:35",
-            "status": "completed",
+            "status": "active",
             "todolist_id": 7
         },
         {
@@ -433,7 +433,7 @@
             "description": "Research destinations",
             "comment": "Comment for item 1",
             "due_date": "2023-11-16 12:31:19",
-            "status": "overdue",
+            "status": "active",
             "todolist_id": 10
         },
         {
@@ -468,7 +468,7 @@
             "description": "Answer pending emails",
             "comment": "Comment for item 1",
             "due_date": "2023-11-08 16:51:43",
-            "status": "overdue",
+            "status": "active",
             "todolist_id": 11
         },
         {
@@ -496,7 +496,7 @@
             "description": "Plan next week's tasks",
             "comment": "Comment for item 5",
             "due_date": "2023-11-12 17:04:44",
-            "status": "overdue",
+            "status": "active",
             "todolist_id": 11
         },
         {
@@ -517,7 +517,7 @@
             "description": "Sketch or paint for an hour",
             "comment": "Comment for item 3",
             "due_date": "2023-11-13 10:54:27",
-            "status": "overdue",
+            "status": "active",
             "todolist_id": 12
         },
         {
@@ -531,7 +531,7 @@
             "description": "Write a short story or poem",
             "comment": "Comment for item 5",
             "due_date": "2023-11-10 17:02:04",
-            "status": "overdue",
+            "status": "active",
             "todolist_id": 12
         },
         {
@@ -594,7 +594,7 @@
             "description": "Pay bills",
             "comment": "Comment for item 4",
             "due_date": "2023-11-15 07:10:18",
-            "status": "overdue",
+            "status": "active",
             "todolist_id": 14
         },
         {
@@ -608,7 +608,7 @@
             "description": "Water the plants",
             "comment": "Comment for item 1",
             "due_date": "2023-11-16 03:58:51",
-            "status": "overdue",
+            "status": "active",
             "todolist_id": 15
         },
         {
@@ -622,7 +622,7 @@
             "description": "Plant new flowers or vegetables",
             "comment": "Comment for item 3",
             "due_date": "2023-11-10 04:04:54",
-            "status": "overdue",
+            "status": "active",
             "todolist_id": 15
         },
         {
