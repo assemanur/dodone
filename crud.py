@@ -76,6 +76,23 @@ def create_todo_list(title, description, user_id, todo_item_description):
     return new_todo_list
 
 
+def update_todo_item_status(item_id):
+    """Update the status of a to-do item and return the new status."""
+    item = ToDoItem.query.get(item_id)
+    if item:
+        # toggle between 'active' and 'completed' statuses
+        if item.status == 'active':
+            item.status = 'completed'
+        elif item.status == 'completed':
+            item.status = 'active'
+
+        db.session.commit()
+        return item.status
+
+    return None
+
+
+
 if __name__ == '__main__':
     from server import app
     connect_to_db(app)
