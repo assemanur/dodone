@@ -54,7 +54,7 @@ class ToDoItem(db.Model):
     description = db.Column(db.String(200), nullable=False)
     comment = db.Column(db.Text, nullable=True)
     due_date = db.Column(db.DateTime, nullable=True)  # For storing the due date
-    status = db.Column(Enum('active', 'completed', 'overdue', name='status_types'), default='active')  # Track the status of the task
+    status = db.Column(Enum('active', 'completed', name='status_types'), default='active')  # Track the status of the task
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())  # Creation timestamp
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())  # Modification timestamp
     list_id = db.Column(db.Integer, db.ForeignKey('todo_lists.id'), nullable=False)
