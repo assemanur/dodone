@@ -26,12 +26,12 @@ Dashboard
         <!-- Form for adding a quick task -->
         <form action="/add_task" method="post">
             <!-- Form field for list title -->
-            <label for="list_title">List Title:</label>
-            <input type="text" id="list_title" name="list_title">
+            <label for="list_title">To-Do List Title:</label>
+            <input type="text" id="list_title" name="list_title" required>
 
             <!-- Form field for task description -->
-            <label for="task_description">Task Description:</label>
-            <input type="text" id="task_description" name="task_description">
+            <label for="task_description">To-Do Task:</label>
+            <input type="text" id="task_description" name="task_description" required>
 
             <input type="submit" value="Add Task">
         </form>
