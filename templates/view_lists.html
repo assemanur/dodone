@@ -5,19 +5,46 @@ View Lists
 {% endblock %}
 
 {% block head %}
+
 {% endblock %}
 
 {% block body %}
 <div class="container">
     <h1>Your To-Do Lists</h1>
 
-    <!-- Display all to-do lists -->
+    <!-- Display all to-do lists as cards -->
     <div class="todo-lists">
         {% for todo_list in todo_lists %}
-            <div class="todo-list">
+            <!-- Apply background color based on category ID -->
+            {% set card_background_color = 
+                '#C086E6' if todo_list.category_id == 1 else
+                '#4679F2' if todo_list.category_id == 2 else
+                '#F3FD5E' if todo_list.category_id == 3 else
+                '#9FF79F' if todo_list.category_id == 4 else
+                '#F9BA28' if todo_list.category_id == 5
+            %}
+
+            <div class="todo-list-card" style="background-color: {{ card_background_color }};">
                 <h2>{{ todo_list.title }}</h2>
                 <p>{{ todo_list.description }}</p>
-                <!-- more details if needed -->
+                
+                <!-- Display all items in the list -->
+                <ul>
+                    {% for item in todo_list.items %}
+                        <li class="todo-item">
+                            {{ item.description }}
+                            <span class="todo-status">
+                                {% if item.status == 'completed' %}
+                                    ✅
+                                {% elif item.status == 'active' %}
+                                    🔄
+                                {% elif item.status == 'overdue' %}
+                                    ⚠️
+                                {% endif %}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
         {% endfor %}
     </div>
