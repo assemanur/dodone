@@ -6,6 +6,33 @@ View Lists
 
 {% block head %}
 
+<style>
+.status-button {
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+function updateStatus(itemId) {
+    $.ajax({
+        url: "/update_status/" + itemId,
+        type: "POST",
+        data: { 'item_id': itemId },
+        success: function(response) {
+            // Update the status on the page based on the response
+            var statusSpan = $('#status-' + itemId);
+            if (response.new_status === 'completed') {
+                statusSpan.text('✅');
+            } else if (response.new_status === 'active') {
+                statusSpan.text('🔲');
+            }
+        }
+    });
+}
+</script>
+
 {% endblock %}
 
 {% block body %}
@@ -28,18 +55,15 @@ View Lists
                 <h2>{{ todo_list.title }}</h2>
                 <p>{{ todo_list.description }}</p>
                 
-                <!-- Display all items in the list -->
                 <ul>
                     {% for item in todo_list.items %}
                         <li class="todo-item">
                             {{ item.description }}
-                            <span class="todo-status">
+                            <span id="status-{{ item.id }}" onclick="updateStatus({{ item.id }})" class="status-button">
                                 {% if item.status == 'completed' %}
                                     ✅
-                                {% elif item.status == 'active' %}
-                                    🔄
-                                {% elif item.status == 'overdue' %}
-                                    ⚠️
+                                {% else %}
+                                    🔲
                                 {% endif %}
                             </span>
                         </li>
