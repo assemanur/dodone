@@ -62,18 +62,21 @@ def get_todo_lists_by_user_id(user_id):
         return None
     
 
-def create_todo_list(title, description, user_id, todo_item_description):
+def create_todo_list(title, description, user_id, category_id):
     """Create and return a new to-do list."""
-    new_todo_list = ToDoList(title=title, description=description, user_id=user_id)
+
+    new_todo_list = ToDoList(title=title, description=description, user_id=user_id, category_id=category_id)
     db.session.add(new_todo_list)
     db.session.commit()
+    return new_todo_list
 
-    # Add an initial to-do item to the list
-    new_todo_item = ToDoItem(description=todo_item_description, list_id=new_todo_list.id)
+def create_todo_item(description, list_id, comment=None, due_date=None):
+    """Create and return a new to-do item."""
+
+    new_todo_item = ToDoItem(description=description, list_id=list_id, comment=comment, due_date=due_date)
     db.session.add(new_todo_item)
     db.session.commit()
-
-    return new_todo_list
+    return new_todo_item
 
 
 def update_todo_item_status(item_id):
