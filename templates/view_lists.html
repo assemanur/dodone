@@ -58,7 +58,6 @@ function updateStatus(itemId) {
                 <ul>
                     {% for item in todo_list.items %}
                         <li class="todo-item">
-                            {{ item.description }}
                             <span id="status-{{ item.id }}" onclick="updateStatus({{ item.id }})" class="status-button">
                                 {% if item.status == 'completed' %}
                                     ✅
@@ -66,6 +65,9 @@ function updateStatus(itemId) {
                                     🔲
                                 {% endif %}
                             </span>
+                            {{ item.description }}
+                            <p><span class="todo-comment">{{ item.comment }}</span></p>
+                            <p><span class="todo-due-date"> by: {{ item.due_date.strftime('%B %d') if item.due_date else '' }}</span></p>
                         </li>
                     {% endfor %}
                 </ul>
