@@ -16,6 +16,11 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def home():
     """View the homepage."""
+
+    if 'user_id' in session:
+        # Redirect to dashboard page if logged in
+        return redirect(url_for('dashboard'))
+
     return render_template('home.html')
 
 @app.route('/signin', methods=['GET', 'POST'])
@@ -26,10 +31,10 @@ def signin():
     if form.validate_on_submit():
         email = form.email.data
         password = form.password.data
-        # Here, you can add the logic to verify the user's credentials
+        # Verify user's credentials
         user = crud.authenticate_user(email, password)
         if user:
-            session['user_id'] = user.id  # Assuming the user model has an 'id' field
+            session['user_id'] = user.id  
             flash('Logged in successfully!', 'success')
             return redirect(url_for('dashboard'))  # Redirect to the dashboard or another appropriate page
         else:
@@ -45,8 +50,7 @@ def signup():
 
     form = CreateUserForm()
     if form.validate_on_submit():
-        # Here, you can add the logic to create a new user
-        # For example, hash the password and save the user to the database
+        # getting email and password from the form
         email = form.email.data
         password = form.password.data
 
@@ -69,19 +73,28 @@ def signup():
     return render_template('signup.html', form=form)
 
 
+@app.route('/logout')
+def handle_logout():
+    """Log the user out."""
+
+    del session["user_id"]
+    flash("You have logged out successfully!", 'success')
+    return redirect('/')
+
+
 @app.route('/dashboard')
 def dashboard():
     #Fetch user
     if 'user_id' not in session:
         # Redirect to sign-in page if not logged in
-        return redirect(url_for('signin'))
+        return redirect(url_for('home'))
 
     user_id = session['user_id']
     user = crud.get_user_by_id(user_id)  # Get the current user
 
     if not user:
         # Handle case where user is not found
-        return redirect(url_for('signin'))
+        return redirect(url_for('home'))
     
     todo_lists = crud.get_todo_lists_by_user_id(user_id)
 
@@ -89,17 +102,38 @@ def dashboard():
     return render_template('dashboard.html', user=user, todo_lists=todo_lists)
 
 
+@app.route('/add_task', methods=['POST'])
+def quick_add_task():
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
+
+    user_id = session['user_id']
+    title = request.form.get('list_title')
+    todo_item_description = request.form.get('task_description')  # Get the to-do item description from the form
+
+    # Create the new to-do list with the initial to-do item
+    new_list = crud.create_todo_list(title=title, description="", user_id=user_id, todo_item_description=todo_item_description)
+
+    if new_list:
+        flash('New to-do list with an initial item added successfully!', 'success')
+    else:
+        flash('An error occurred. Please try again.', 'error')
+
+    return redirect(url_for('dashboard'))
+
+
+
 @app.route('/view_lists')
 def view_lists():
     # Ensure the user is logged in
     if 'user_id' not in session:
-        return redirect(url_for('signin'))
+        return redirect(url_for('home'))
 
     user_id = session['user_id']
     user = crud.get_user_by_id(user_id)
 
     if not user:
-        return redirect(url_for('signup'))
+        return redirect(url_for('home'))
 
     todo_lists = crud.get_todo_lists_by_user_id(user_id)
 
@@ -109,18 +143,24 @@ def view_lists():
 @app.route('/add_new_list', methods=['POST'])
 def add_new_list():
     if 'user_id' not in session:
-        return redirect(url_for('signin'))
+        return redirect(url_for('home'))
 
     user_id = session['user_id']
     title = request.form.get('list_title')
     description = request.form.get('list_description')
-    todo_item_description = request.form.get('todo_item')  # Get the to-do item description from the form
+    category_id = request.form.get('list_category')
+    todo_item_descriptions = request.form.getlist('todo_item[]')  # Get all to-do item descriptions
+    todo_item_comments = request.form.getlist('todo_comment[]')    # Get all to-do item comments
+    todo_item_due_dates = request.form.getlist('todo_due_date[]')   #Get all to-do item due dates
 
-    # Create the new to-do list with the initial to-do item
-    new_list = crud.create_todo_list(title, description, user_id, todo_item_description)
+    # Create the new to-do list
+    new_list = crud.create_todo_list(title, description, user_id, category_id)
 
     if new_list:
-        flash('New to-do list with an initial item added successfully!', 'success')
+        # Add each to-do item to the list
+        for item_desc, comment, due_date in zip(todo_item_descriptions, todo_item_comments, todo_item_due_dates):
+            crud.create_todo_item(item_desc, new_list.id, comment, due_date)
+        flash('New to-do list added successfully!', 'success')
     else:
         flash('An error occurred. Please try again.', 'error')
 
