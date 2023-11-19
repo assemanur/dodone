@@ -1,6 +1,6 @@
 """Server for a DoDone App website."""
 
-from flask import (Flask, render_template, request, flash, session, redirect, url_for)
+from flask import (Flask, render_template, request, flash, session, redirect, url_for, jsonify)
 from flask_sqlalchemy import SQLAlchemy
 from models import connect_to_db, db
 import crud, os
@@ -127,6 +127,13 @@ def add_new_list():
     return redirect(url_for('view_lists'))
 
 
+@app.route('/update_status/<int:item_id>', methods=['POST'])
+def update_status(item_id):
+    # Update the status of the to-do item
+    new_status = crud.update_todo_item_status(item_id)
+    
+    # Return the new status as a JSON response
+    return jsonify(new_status=new_status)
 
 
 if __name__ == "__main__":
