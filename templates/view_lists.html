@@ -7,7 +7,7 @@ View Lists
 {% block head %}
 
 <style>
-.status-button {
+.status-button, .remove_task {
     cursor: pointer;
     font-weight: bold;
 }
@@ -66,8 +66,12 @@ function updateStatus(itemId) {
                                 {% endif %}
                             </span>
                             {{ item.description }}
+                            {% if item.comment %}
                             <p><span class="todo-comment">{{ item.comment }}</span></p>
-                            <p><span class="todo-due-date"> by: {{ item.due_date.strftime('%B %d') if item.due_date else '' }}</span></p>
+                            {% endif %}
+                            {% if item.due_date %}
+                            <p><span class="todo-due-date"> 🗓️ by: {{ item.due_date.strftime('%B %d') if item.due_date else '' }}</span></p>
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
@@ -79,18 +83,66 @@ function updateStatus(itemId) {
     <div class="add-new-list">
         <h2>Add New List</h2>
         <form action="/add_new_list" method="post">
-            <label for="list_title">List Title:</label>
+            <label for="list_title">To-Do List Title:</label>
             <input type="text" id="list_title" name="list_title" required>
 
-            <label for="list_description">List Description:</label>
+            <label for="list_description">To-Do List Description:</label>
             <textarea id="list_description" name="list_description"></textarea>
 
-            <!-- to add a single to-do item to start with -->
-            <label for="todo_item">To-Do Item:</label>
-            <input type="text" id="todo_item" name="todo_item" required>
+            <label for="list_category">To-Do List Category:</label>
+                <select id="list_category" name="list_category">
+                    <option value="" disabled selected>Select a category</option>
+                    <option value="1">Personal</option>
+                    <option value="2">Work</option>
+                    <option value="3">Hobby</option>
+                    <option value="4">Health</option>
+                    <option value="5">Education</option>
+                </select>
+
+            <div id="todo_tasks">
+                <div class="todo_task">
+                    <label for="todo_item">To-Do Task:</label>
+                    <input type="text" class="todo_item" name="todo_item[]" required>
+
+                    <label for="todo_comment">Comment:</label>
+                    <textarea class="todo_comment" name="todo_comment[]"></textarea>
+
+                    <label for="todo_due_date">Due Date:</label>
+                    <input type="date" class="todo_due_date" name="todo_due_date[]">
+                    <!-- button to remove the to-do item -->
+                    <span class="remove_task" role="button" aria-label="Remove task">🗑️</span>
+                </div>
+
+            </div>
+
+            <button type="button" id="add_task">Add Task</button>
 
             <input type="submit" value="Add List">
         </form>
     </div>
+
+    <!-- AJAX script to add a task-->
+    <script>
+        $(document).ready(function() {
+            $('#add_task').click(function(e) {
+                e.preventDefault();
+                $('#todo_tasks').append('<div class="todo_task"><input type="text" class="todo_item" name="todo_item[]" required><textarea class="todo_comment" name="todo_comment[]"></textarea><input type="date" class="todo_due_date" name="todo_due_date[]"><span class="remove_task" role="button" aria-label="Remove task">🗑️</span></div>');
+            });
+        });
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const todoTasksContainer = document.getElementById('todo_tasks');
+    
+        todoTasksContainer.addEventListener('click', function(e) {
+            if (e.target && e.target.matches('.remove_task')) {
+                const todoTask = e.target.closest('.todo_task');
+                todoTask.remove();
+            }
+        });
+    });
+    </script>
+
 </div>
 {% endblock %}
