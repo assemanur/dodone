@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit List
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Edit List: {{ todo_list.title }}</h1>
+
+    <!-- Form to edit the list -->
+    <form action="/update_list/{{ todo_list.id }}" method="post">
+        <!-- Fields for editing list title, description, and category -->
+        <label for="list_title">List Title:</label>
+        <input type="text" id="list_title" name="list_title" value="{{ todo_list.title }}" required>
+
+        <label for="list_description">List Description:</label>
+        <textarea id="list_description" name="list_description">{{ todo_list.description }}</textarea>
+
+        <label for="list_category">List Category:</label>
+        <select id="list_category" name="list_category">
+            <!-- Looping through categories and selecting the one that matches -->
+            {% for category in categories %}
+                <option value="{{ category.id }}"{% if category.id == todo_list.category_id %} selected {% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Displaying tasks with fields for editing -->
+        {% for task in todo_list.items %}
+            <div class="todo_task">
+                <!-- Fields for editing task description, comment, due date, and status -->
+                <input type="hidden" name="task_id[]" value="{{ task.id }}">
+                <label for="task_description_{{ task.id }}">Task Description:</label>
+                <input type="text" id="task_description_{{ task.id }}" name="task_description[]" value="{{ task.description }}" required>
+
+                <label for="task_comment_{{ task.id }}">Comment:</label>
+                <textarea id="task_comment_{{ task.id }}" name="task_comment[]">{{ task.comment }}</textarea>
+
+                <label for="task_due_date_{{ task.id }}">Due Date:</label>
+                <input type="date" id="task_due_date_{{ task.id }}" name="task_due_date[]" value="{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '' }}">
+
+                <label for="task_status_{{ task.id }}">Status:</label>
+                <select id="task_status_{{ task.id }}" name="task_status[]">
+                    <option value="active" {% if task.status == 'active' %} selected {% endif %}>Active</option>
+                    <option value="completed" {% if task.status == 'completed' %} selected {% endif %}>Completed</option>
+                </select>
+
+                <span class="remove_task" role="button" aria-label="Remove task">🗑️</span>
+            </div>
+        {% endfor %}
+
+        <input type="submit" value="Update List">
+    </form>
+
+</div>
+{% endblock %}
