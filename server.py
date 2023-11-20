@@ -261,6 +261,26 @@ def delete_list(list_id):
     return redirect(url_for('view_lists'))
 
 
+@app.route('/delete_task/<int:task_id>', methods=['POST'])
+def delete_task(task_id):
+    # Retrieve the task by ID
+    task = crud.ToDoItem.query.get(task_id)
+
+    # Check if task exists
+    if task is None:
+        # If no task found, return an error message
+        return jsonify({'message': 'Task not found'}), 404
+
+    # Delete the task
+    db.session.delete(task)
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    # Return a success message
+    return jsonify({'message': 'Task deleted successfully'}), 200
+
+
 
 if __name__ == "__main__":
     connect_to_db(app)
