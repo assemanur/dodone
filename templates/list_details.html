@@ -4,9 +4,19 @@
 Edit List
 {% endblock %}
 
+{% block head %}
+<style>
+    .delete-list-button, .delete-task-button, #add_new_task, #remove_task {
+        cursor: pointer;
+        font-weight: bold;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+{% endblock %}
+
 {% block body %}
 <div class="container">
-    <h1>Edit List: {{ todo_list.title }}</h1>
+    <h1>Edit List: {{ todo_list.title }}<span class="delete-list-button" role="button" data-list-id="{{ todo_list.id }}">🗑️ </span></h1>
 
     <!-- Form to edit the list -->
     <form action="/update_list/{{ todo_list.id }}" method="post">
@@ -45,12 +55,102 @@ Edit List
                     <option value="completed" {% if task.status == 'completed' %} selected {% endif %}>Completed</option>
                 </select>
 
-                <span class="remove_task" role="button" aria-label="Remove task">🗑️</span>
+                <span class="delete-task-button" role="button" aria-label="Remove task" data-task-id="{{ task.id }}">🗑️</span>
             </div>
         {% endfor %}
 
+        <div id="new_tasks">
+            <!-- New tasks will be added here -->
+        </div>
+
+        <!-- Button to add a new task -->
+        <button type="button" id="add_new_task">Add New Task</button>
+
         <input type="submit" value="Update List">
     </form>
+
+    <!-- JavaScript for AJAX request to delete the list -->
+    <script>
+        $(document).ready(function() {
+            $('.delete-list-button').click(function() {
+                var listId = $(this).data('list-id');
+                if (confirm('Are you sure you want to delete this entire list?')) {
+                    $.ajax({
+                        url: '/delete_list/' + listId,
+                        type: 'POST',
+                        success: function(response) {
+                            window.location.href = '/view_lists';  // Redirect after deletion
+                        },
+                        error: function() {
+                            alert('Error deleting list.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+    <!-- JavaScript for AJAX request to delete a task -->
+    <script>
+        $(document).ready(function() {
+            $('.delete-task-button').click(function() {
+                var taskId = $(this).data('task-id');
+                if (confirm('Are you sure you want to remove this task?')) {
+                    $.ajax({
+                        url: '/delete_task/' + taskId,
+                        type: 'POST',
+                        success: function(response) {
+                            location.reload();  // Reload the page to reflect changes
+                        },
+                        error: function() {
+                            alert('Error deleting task.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+    <!-- JavaScript for adding a new task -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('add_new_task').addEventListener('click', function() {
+                var newTaskContainer = document.getElementById('new_tasks');
+        
+                // HTML structure for a new task input section
+                var newTaskHtml = `
+                    <div class="todo_task">
+                        <input type="hidden" name="task_id[]" value="new">
+                        <label>Task Description:</label>
+                        <input type="text" name="task_description[]" required>
+                        <label>Comment:</label>
+                        <textarea name="task_comment[]"></textarea>
+                        <label>Due Date:</label>
+                        <input type="date" name="task_due_date[]">
+                        <label>Status:</label>
+                        <select name="task_status[]">
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <span class="remove_task" role="button">🗑️</span>
+                    </div>`;
+        
+                // Append the new task section to the new task container
+                newTaskContainer.insertAdjacentHTML('beforeend', newTaskHtml);
+            });
+        });
+    </script>
+
+    <!-- To remove a newly added task -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('new_tasks').addEventListener('click', function(e) {
+                if (e.target && e.target.matches('.remove_task')) {
+                    e.target.closest('.todo_task').remove();
+                }
+            });
+        });
+    </script>
 
 </div>
 {% endblock %}
