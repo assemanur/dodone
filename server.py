@@ -6,6 +6,7 @@ from models import connect_to_db, db
 import crud, os
 from jinja2 import StrictUndefined
 from forms import CreateUserForm, SignInForm
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -169,11 +170,96 @@ def add_new_list():
 
 @app.route('/update_status/<int:item_id>', methods=['POST'])
 def update_status(item_id):
-    # Update the status of the to-do item
+    """Update the status of the to-do item. """
+
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
+    
     new_status = crud.update_todo_item_status(item_id)
     
     # Return the new status as a JSON response
     return jsonify(new_status=new_status)
+
+
+@app.route('/list_details/<int:list_id>')
+def list_details(list_id):
+
+    # Fetch the specific list using list_id
+    todo_list = crud.ToDoList.query.get(list_id)
+
+    if not todo_list:
+        flash('List not found.', 'error')
+        return redirect(url_for('view_lists'))
+    
+    categories = crud.Category.query.all()
+
+    return render_template('list_details.html', todo_list=todo_list, categories=categories)
+
+
+@app.route('/update_list/<int:list_id>', methods=['POST'])
+def update_list(list_id):
+    """Update the to-do list details. """
+
+    list_to_update = crud.ToDoList.query.get(list_id)
+
+    if not list_to_update:
+        flash('To-Do list not found.', 'error')
+        return redirect(url_for('view_lists'))
+
+    # Updating list properties
+    list_to_update.title = request.form.get('list_title')
+    list_to_update.description = request.form.get('list_description')
+    list_to_update.category_id = request.form.get('list_category')
+
+    # Updating tasks
+    task_ids = request.form.getlist('task_id[]')
+    task_descriptions = request.form.getlist('task_description[]')
+    task_comments = request.form.getlist('task_comment[]')
+    task_due_dates = request.form.getlist('task_due_date[]')
+    task_statuses = request.form.getlist('task_status[]')
+
+    for i, task_id in enumerate(task_ids):
+        task_to_update = crud.ToDoItem.query.get(task_id)
+        if task_to_update:
+            # Updating task properties
+            task_to_update.description = task_descriptions[i]
+            task_to_update.comment = task_comments[i]
+
+            # Handling empty due_date string
+            if task_due_dates[i]:
+                task_to_update.due_date = datetime.strptime(task_due_dates[i], '%Y-%m-%d')
+            else:
+                task_to_update.due_date = None 
+
+            task_to_update.status = task_statuses[i]
+
+
+    db.session.commit()
+    flash('List updated successfully!', 'success')
+
+    return redirect(url_for('view_lists'))
+
+
+@app.route('/delete_list/<int:list_id>', methods=['POST'])
+def delete_list(list_id):
+
+    # Fetch the list to be deleted
+    list_to_delete = crud.ToDoList.query.get(list_id)
+    if not list_to_delete:
+        flash('List not found.', 'error')
+        return redirect(url_for('view_lists'))
+
+    # Deleting associated tasks
+    crud.ToDoItem.query.filter_by(list_id=list_id).delete()
+
+    # Deleting the list
+    db.session.delete(list_to_delete)
+
+    db.session.commit()
+
+    flash('List deleted successfully!', 'success')
+    return redirect(url_for('view_lists'))
+
 
 
 if __name__ == "__main__":
