@@ -52,14 +52,7 @@ def update_user(user_id, email=None, password=None):
 def get_todo_lists_by_user_id(user_id):
     """Return to-do lists for a user with the given user_id."""
 
-    # First, get the user by email
-    user = User.query.filter_by(id=user_id).first()
-
-    # If the user exists, return their to-do lists
-    if user:
-        return user.lists
-    else:
-        return None
+    return ToDoList.query.filter_by(user_id=user_id).order_by(ToDoList.created_at.desc()).all()
     
 
 def create_todo_list(title, description, user_id, category_id):
@@ -70,9 +63,11 @@ def create_todo_list(title, description, user_id, category_id):
     db.session.commit()
     return new_todo_list
 
+
 def create_todo_item(description, list_id, comment=None, due_date=None):
     """Create and return a new to-do item."""
-
+    if due_date == '':
+        due_date = None
     new_todo_item = ToDoItem(description=description, list_id=list_id, comment=comment, due_date=due_date)
     db.session.add(new_todo_item)
     db.session.commit()
