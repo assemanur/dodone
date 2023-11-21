@@ -29,11 +29,15 @@ Edit List
 
         <label for="list_category">List Category:</label>
         <select id="list_category" name="list_category">
+            <!-- Default blank option, disabled and conditionally selected -->
+            <option value="" disabled{% if not todo_list.category_id %} selected{% endif %}>Select a category</option>
+        
             <!-- Looping through categories and selecting the one that matches -->
             {% for category in categories %}
-                <option value="{{ category.id }}"{% if category.id == todo_list.category_id %} selected {% endif %}>{{ category.name }}</option>
+                <option value="{{ category.id }}" {% if category.id == todo_list.category_id %}selected{% endif %}>{{ category.name }}</option>
             {% endfor %}
         </select>
+        
 
         <!-- Displaying tasks with fields for editing -->
         {% for task in todo_list.items %}
