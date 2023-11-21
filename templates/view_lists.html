@@ -159,7 +159,8 @@ function updateStatus(itemId) {
                         type: 'POST',
                         // Handle success and failure
                         success: function(response) {
-                            // Remove the list from the UI or redirect
+                            // Reloading the page
+                            location.reload();
                         },
                         error: function() {
                             alert('Error deleting list.');
