@@ -113,15 +113,15 @@ def quick_add_task():
     todo_item_description = request.form.get('task_description')  # Get the to-do item description from the form
 
     # Create the new to-do list with the initial to-do item
-    new_list = crud.create_todo_list(title=title, description="", user_id=user_id, todo_item_description=todo_item_description)
+    new_list = crud.create_todo_list(title=title, description="", user_id=user_id, category_id=None)
+    item_in_new_list = crud.create_todo_item(description=todo_item_description, list_id=new_list.id)
 
-    if new_list:
+    if item_in_new_list:
         flash('New to-do list with an initial item added successfully!', 'success')
     else:
         flash('An error occurred. Please try again.', 'error')
 
     return redirect(url_for('dashboard'))
-
 
 
 @app.route('/view_lists')
@@ -185,7 +185,8 @@ def update_status(item_id):
 def list_details(list_id):
 
     # Fetch the specific list using list_id
-    todo_list = crud.ToDoList.query.get(list_id)
+    #todo_list = crud.ToDoList.query.get(list_id)
+    todo_list = db.session.get(crud.ToDoList, list_id)
 
     if not todo_list:
         flash('List not found.', 'error')
@@ -200,7 +201,8 @@ def list_details(list_id):
 def update_list(list_id):
     """Update the to-do list details. """
 
-    list_to_update = crud.ToDoList.query.get(list_id)
+    #list_to_update = crud.ToDoList.query.get(list_id)
+    list_to_update = db.session.get(crud.ToDoList, list_id)
 
     if not list_to_update:
         flash('To-Do list not found.', 'error')
@@ -219,20 +221,26 @@ def update_list(list_id):
     task_statuses = request.form.getlist('task_status[]')
 
     for i, task_id in enumerate(task_ids):
-        task_to_update = crud.ToDoItem.query.get(task_id)
-        if task_to_update:
-            # Updating task properties
-            task_to_update.description = task_descriptions[i]
-            task_to_update.comment = task_comments[i]
+        #print(f"Processing task {i}: ID = {task_id}")
+        if task_id == 'new':
+            #new_task = crud.ToDoItem(description=task_descriptions[i], list_id=list_id)
+            new_task = crud.create_todo_item(description=task_descriptions[i], list_id=list_id, comment=task_comments[i], due_date=task_due_dates[i])
+            db.session.add(new_task)
+        else:
+            #existing_task = crud.ToDoItem.query.get(int(task_id))
+            existing_task = db.session.get(crud.ToDoItem, int(task_id))
+            if existing_task:
+                # Updating task properties
+                existing_task.description = task_descriptions[i]
+                existing_task.comment = task_comments[i]
 
             # Handling empty due_date string
             if task_due_dates[i]:
-                task_to_update.due_date = datetime.strptime(task_due_dates[i], '%Y-%m-%d')
+                existing_task.due_date = datetime.strptime(task_due_dates[i], '%Y-%m-%d')
             else:
-                task_to_update.due_date = None 
+                existing_task.due_date = None 
 
-            task_to_update.status = task_statuses[i]
-
+            existing_task.status = task_statuses[i]
 
     db.session.commit()
     flash('List updated successfully!', 'success')
@@ -244,8 +252,9 @@ def update_list(list_id):
 def delete_list(list_id):
 
     # Fetch the list to be deleted
-    list_to_delete = crud.ToDoList.query.get(list_id)
-    if not list_to_delete:
+    #list_to_delete = crud.ToDoList.query.get(list_id)
+    list = db.session.get(crud.ToDoList, list_id)
+    if not list:
         flash('List not found.', 'error')
         return redirect(url_for('view_lists'))
 
@@ -253,7 +262,7 @@ def delete_list(list_id):
     crud.ToDoItem.query.filter_by(list_id=list_id).delete()
 
     # Deleting the list
-    db.session.delete(list_to_delete)
+    db.session.delete(list)
 
     db.session.commit()
 
@@ -264,7 +273,8 @@ def delete_list(list_id):
 @app.route('/delete_task/<int:task_id>', methods=['POST'])
 def delete_task(task_id):
     # Retrieve the task by ID
-    task = crud.ToDoItem.query.get(task_id)
+    #task = crud.ToDoItem.query.get(task_id)
+    task = db.session.get(crud.ToDoItem, task_id)
 
     # Check if task exists
     if task is None:
