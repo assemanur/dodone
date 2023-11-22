@@ -5,7 +5,8 @@ Dashboard
 {% endblock %}
 
 {% block head %}
-<!-- Any additional head content specific to the dashboard -->
+<!-- Calendar JS -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
 {% endblock %}
 
 {% block body %}
@@ -13,8 +14,7 @@ Dashboard
     <h1>Welcome, {{ user.email }}!</h1>
     <div class="profile-info">
         <!-- Display user profile information -->
-        <p>Email: {{ user.email }}</p>
-        <!-- Add more profile info if needed -->
+        <p>{{ user.email }}</p>
     </div>
 
     <div class="todo-summary">
@@ -36,5 +36,26 @@ Dashboard
             <input type="submit" value="Add Task">
         </form>
     </div>
+    <!-- Calendar container -->
+    <div id='calendar'></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+    
+            // Fetch task data
+            fetch('/get_upcoming_tasks')
+                .then(response => response.json())
+                .then(tasks => {
+                    console.log(tasks);
+                    // Initialize FullCalendar
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        events: tasks  // Use the fetched tasks as events
+                    });
+                    calendar.render();
+                });
+        });
+    </script>
 </div>
 {% endblock %}
