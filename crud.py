@@ -1,13 +1,13 @@
 """CRUD operations in database."""
 
 from flask import jsonify
-from models import db, User, ToDoList, ToDoItem, Category, connect_to_db
+from models import db, User, ToDoList, ToDoItem, connect_to_db
 #import requests
 
-def create_user(email, password):
+def create_user(email, password, f_name, l_name, profile_picture_url=None, bio=None):
     """Creating a new user."""
 
-    new_user = User(email=email)
+    new_user = User(email=email, f_name=f_name, l_name=l_name, profile_picture_url=profile_picture_url, bio=bio)
     new_user.password = password  # This will hash the password
     db.session.add(new_user)
     try:

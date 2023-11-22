@@ -51,7 +51,9 @@ def signup():
 
     form = CreateUserForm()
     if form.validate_on_submit():
-        # getting email and password from the form
+        # getting f_name, l_name, email and password from the WTF form
+        f_name = form.f_name.data
+        l_name = form.l_name.data
         email = form.email.data
         password = form.password.data
 
@@ -62,7 +64,7 @@ def signup():
             return redirect(url_for('signup'))
 
         # Creating a new user and adding to the database
-        user = crud.create_user(email=email, password=password)
+        user = crud.create_user(email=email, password=password, f_name=f_name, l_name=l_name)
         if user:
             db.session.add(user)
             db.session.commit()
@@ -98,7 +100,6 @@ def dashboard():
         return redirect(url_for('home'))
     
     todo_lists = crud.get_todo_lists_by_user_id(user_id)
-
 
     return render_template('dashboard.html', user=user, todo_lists=todo_lists)
 

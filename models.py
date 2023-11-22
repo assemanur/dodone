@@ -15,6 +15,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(80), unique=True, nullable=False)
     _password_hash = db.Column(db.String(200), nullable=False)
+    f_name = db.Column(db.String(50), nullable=False)
+    l_name = db.Column(db.String(50), nullable=False)
+    profile_picture_url = db.Column(db.String(500), nullable=True)
+    bio = db.Column(db.String(500), nullable=True)
     lists = db.relationship('ToDoList', backref='user', lazy=True)
 
 
@@ -63,7 +67,8 @@ class ToDoItem(db.Model):
 
     def __repr__(self):
         return f'<ToDoItem {self.description}>'
-    
+
+
 class Category(db.Model):
     """To-Do list category."""
 

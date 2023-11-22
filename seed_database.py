@@ -27,7 +27,7 @@ with server.app.app_context():
 
     # Iterating through each item in dictionary
     for user_data in data['users']:
-        user = User(email=user_data['email'], password=user_data['password_hash'])
+        user = User(email=user_data['email'], password=user_data['password_hash'], f_name=user_data['f_name'], l_name=user_data['l_name'], profile_picture_url=user_data['profile_picture_url'], bio=user_data['bio'])
         db.session.add(user)
 
         #db_users = crud.create_user(email, password)
