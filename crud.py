@@ -1,6 +1,6 @@
 """CRUD operations in database."""
 
-from flask import session
+from flask import jsonify
 from models import db, User, ToDoList, ToDoItem, Category, connect_to_db
 #import requests
 
@@ -53,6 +53,35 @@ def get_todo_lists_by_user_id(user_id):
     """Return to-do lists for a user with the given user_id."""
 
     return ToDoList.query.filter_by(user_id=user_id).order_by(ToDoList.created_at.desc()).all()
+
+
+def get_upcoming_tasks(user_id):
+
+    #category-color mapping
+    category_colors = {
+        1: "#C086E6",
+        2: "#4679F2",
+        3: "#FF9999",
+        4: "#3EB65A",
+        5: "#F9BA28",
+    }
+
+    todo_lists = ToDoList.query.filter_by(user_id=user_id).all()
+    tasks = []
+    for todo_list in todo_lists:
+        list_tasks = ToDoItem.query.filter(ToDoItem.list_id == todo_list.id, ToDoItem.due_date != None).all()
+        # Add each task's details to the tasks list
+        for task in list_tasks:
+            task_color = category_colors.get(todo_list.category_id, "#A0A0A0")  # Default color if category not in dict
+            task_info = {
+                "title": task.description,
+                "start": task.due_date.strftime('%Y-%m-%d') if task.due_date else None,
+                "color": task_color,  # Assign color based on category
+                "list_category": todo_list.category_id,
+                "task_id": task.id
+            }
+            tasks.append(task_info)
+    return tasks
     
 
 def create_todo_list(title, description, user_id, category_id):
