@@ -11,10 +11,20 @@ Dashboard
 
 {% block body %}
 <div class="container">
-    <h1>Welcome, {{ user.email }}!</h1>
+    <h1>Welcome, {{ user.f_name }} {{ user.l_name }}!</h1>
     <div class="profile-info">
         <!-- Display user profile information -->
-        <p>{{ user.email }}</p>
+        {% if user.profile_picture_url %}
+            <img src="{{ user.profile_picture_url }}" alt="Profile Picture" class="profile-picture">
+        {% endif %}
+
+        <!-- user's bio -->
+        {% if user.bio %}
+            <p>{{ user.bio }}</p>
+        {% endif %}
+
+        <!-- user's email -->
+        <p>Email: {{ user.email }}</p>
     </div>
 
     <div class="todo-summary">
