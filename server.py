@@ -124,6 +124,19 @@ def quick_add_task():
     return redirect(url_for('dashboard'))
 
 
+@app.route('/get_upcoming_tasks')
+def get_upcoming_tasks():
+    
+    user_id = session.get('user_id')
+
+    if user_id:
+        tasks = crud.get_upcoming_tasks(user_id)
+        return jsonify(tasks)
+    else:
+        return jsonify([])  # Return an empty list if no user is logged in
+
+
+
 @app.route('/view_lists')
 def view_lists():
     # Ensure the user is logged in
