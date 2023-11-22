@@ -21,10 +21,10 @@ Edit List
     <!-- Form to edit the list -->
     <form action="/update_list/{{ todo_list.id }}" method="post">
         <!-- Fields for editing list title, description, and category -->
-        <label for="list_title">List Title:</label>
+        <label for="list_title">To-Do List Title:</label>
         <input type="text" id="list_title" name="list_title" value="{{ todo_list.title }}" required>
 
-        <label for="list_description">List Description:</label>
+        <label for="list_description">To-Do List Description:</label>
         <textarea id="list_description" name="list_description">{{ todo_list.description }}</textarea>
 
         <label for="list_category">List Category:</label>
@@ -44,7 +44,7 @@ Edit List
             <div class="todo_task">
                 <!-- Fields for editing task description, comment, due date, and status -->
                 <input type="hidden" name="task_id[]" value="{{ task.id }}">
-                <label for="task_description_{{ task.id }}">Task Description:</label>
+                <label for="task_description_{{ task.id }}">To-Do Task:</label>
                 <input type="text" id="task_description_{{ task.id }}" name="task_description[]" value="{{ task.description }}" required>
 
                 <label for="task_comment_{{ task.id }}">Comment:</label>
